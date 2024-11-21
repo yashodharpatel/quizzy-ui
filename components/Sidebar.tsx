@@ -3,20 +3,37 @@
 import { useQuestion } from "@/context/QuestionContext";
 import { useEffect, useRef, useState } from "react";
 
+interface Question {
+  _id: string;
+  questionText: string;
+  options: string[];
+  correctAnswer: string;
+  __v: number;
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  __v: number;
+}
+
 export const Sidebar = () => {
   const { currentQuestion, setCurrentQuestion } = useQuestion();
-  const [quiz, setQuiz] = useState<any | null>(null);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      let selectedQuiz = localStorage.getItem("quiz");
+      const selectedQuiz = localStorage.getItem("quiz");
 
       if (selectedQuiz) {
-        setQuiz(JSON.parse(selectedQuiz));
+        setQuiz(JSON.parse(selectedQuiz) as Quiz);
         clearInterval(intervalId);
       }
     }, 100);
+
     return () => clearInterval(intervalId);
   }, []);
 
@@ -45,7 +62,7 @@ export const Sidebar = () => {
       className="w-[90px] bg-white shadow-md p-4 overflow-auto"
     >
       <ul className="space-y-3">
-        {quiz.questions.map((_: any, index: any) => (
+        {quiz.questions.map((_, index) => (
           <li key={index}>
             <button
               data-index={index}

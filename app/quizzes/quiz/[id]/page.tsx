@@ -5,15 +5,31 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
+interface Question {
+  _id: string;
+  questionText: string;
+  options: string[];
+  correctAnswer: string;
+  __v: number;
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  __v: number;
+}
+
 export default function QuizPage({ params }: { params: { id: string } }) {
-  const [quizzes, setQuizzes] = useState<any[]>([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedQuizzes = localStorage.getItem("quizzes");
 
     if (storedQuizzes) {
-      setQuizzes(JSON.parse(storedQuizzes));
+      setQuizzes(JSON.parse(storedQuizzes) as Quiz[]);
       setLoading(false);
     } else {
       setLoading(false);
@@ -31,10 +47,13 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   const [answers, setAnswers] = useState<{ [key: number]: number | null }>(
     () =>
-      quiz?.questions.reduce((acc: any, _: any, index: any) => {
-        acc[index] = null;
-        return acc;
-      }, {} as { [key: number]: number | null }) || {}
+      quiz?.questions.reduce(
+        (acc: { [key: number]: number | null }, _, index: number) => {
+          acc[index] = null;
+          return acc;
+        },
+        {}
+      ) || {}
   );
 
   if (loading) {
@@ -65,7 +84,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
   };
 
   const handleSubmit = async () => {
-    const responses = quiz.questions.map((question: any, index: number) => {
+    const responses = quiz.questions.map((question, index) => {
       return {
         questionId: question._id,
         answer: answers[index],
@@ -107,7 +126,8 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
   return (
     <div className="px-4 py-2">
-      <h1 className="text-3xl font-bold mb-4">{quiz.title}</h1>
+      <h1 className="text-3xl font-bold mb-2">{quiz.title}</h1>
+      <p className="text-gray-600 mb-8">{quiz.description}</p>
       <div className="bg-white shadow-md rounded-md p-6">
         <h2 className="text-xl mb-4">Question {currentQuestion + 1}</h2>
 
@@ -116,28 +136,26 @@ export default function QuizPage({ params }: { params: { id: string } }) {
         </p>
 
         <div className="flex flex-col gap-4 mb-16 text-black font-semibold">
-          {quiz.questions[currentQuestion].options.map(
-            (option: any, index: any) => (
-              <label
-                key={index}
-                className={`flex items-center gap-3 p-3 border rounded-md cursor-pointer 
+          {quiz.questions[currentQuestion].options.map((option, index) => (
+            <label
+              key={index}
+              className={`flex items-center gap-3 p-3 border rounded-md cursor-pointer 
                 ${
                   answers[currentQuestion] === index
                     ? "border-blue-500"
                     : "border-gray-300 hover:border-blue-400"
                 }`}
-              >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestion}`}
-                  checked={answers[currentQuestion] === index}
-                  onChange={() => handleOptionChange(currentQuestion, index)}
-                  className="form-radio"
-                />
-                <span>{option}</span>
-              </label>
-            )
-          )}
+            >
+              <input
+                type="radio"
+                name={`question-${currentQuestion}`}
+                checked={answers[currentQuestion] === index}
+                onChange={() => handleOptionChange(currentQuestion, index)}
+                className="form-radio"
+              />
+              <span>{option}</span>
+            </label>
+          ))}
         </div>
 
         <div className="flex justify-between">

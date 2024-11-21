@@ -12,6 +12,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+interface Question {
+  _id: string;
+  questionText: string;
+  options: string[];
+  correctAnswer: string;
+  __v: number;
+}
+
+interface Quiz {
+  _id: string;
+  title: string;
+  description: string;
+  questions: Question[];
+  __v: number;
+}
+
 export default function AllQuizzes() {
   const [quizzes, setQuizzes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +83,7 @@ export default function AllQuizzes() {
         All Quizzes <Filter size={35} fill="black" />
       </h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-        {quizzes.map((quiz: any) => (
+        {quizzes.map((quiz: Quiz) => (
           <Card
             key={quiz._id}
             className="bg-white shadow-md rounded-md border-2 border-gray-200"

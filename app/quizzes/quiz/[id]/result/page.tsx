@@ -11,6 +11,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+interface Result {
+  correctAnswer: string;
+  isCorrect: boolean;
+  questionText: string;
+  userAnswer: string;
+}
+
 export default function ResultsPage() {
   const searchParams = useSearchParams();
   const data = JSON.parse(searchParams.get("data") || "{}");
@@ -39,7 +46,7 @@ export default function ResultsPage() {
           </TableRow>
         </TableHeader>
         <TableBody className="text-base">
-          {data.results.map((result: any, index: number) => (
+          {data.results.map((result: Result, index: number) => (
             <TableRow key={index}>
               <TableCell>{result.questionText}</TableCell>
               <TableCell>{result.userAnswer}</TableCell>
