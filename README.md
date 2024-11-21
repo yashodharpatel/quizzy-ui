@@ -2,6 +2,12 @@
 
 Quizzy Client is a frontend application that allows users to take quizzes, view their scores, and interact with a dynamic quiz system. It communicates with the Quizzy Server backend to fetch quiz data, submit responses, and display results.
 
+## Features
+
+- Browse and select quizzes.
+- Take quizzes and submit responses.
+- View detailed results, including scores and correct answers.
+
 ## Setup
 
 To run the project locally, follow these steps:
@@ -50,3 +56,9 @@ To run the project locally, follow these steps:
 ## Testing
 
 You can test the frontend features by running the development server and interacting with the application in your browser. Additionally, use browser developer tools to debug and inspect the network requests.
+
+## Tech Stack
+
+- Framework: Next.js
+- Styling: Shadcn + Tailwind CSS
+- API Integration: Axios
