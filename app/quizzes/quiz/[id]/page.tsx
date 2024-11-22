@@ -24,8 +24,14 @@ interface Quiz {
 export default function QuizPage({ params }: { params: { id: string } }) {
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState("");
 
   useEffect(() => {
+    const userId: string =
+      localStorage.getItem("userId") ?? "patelyashodhar012@gmail.com";
+
+    if (userId) setUserId(userId);
+
     const storedQuizzes = localStorage.getItem("quizzes");
 
     if (storedQuizzes) {
@@ -93,7 +99,7 @@ export default function QuizPage({ params }: { params: { id: string } }) {
 
     const payload = {
       quizId: quiz._id,
-      userId: "yashodharpatel",
+      userId: userId,
       responses,
     };
 
